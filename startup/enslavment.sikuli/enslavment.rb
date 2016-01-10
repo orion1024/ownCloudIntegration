@@ -1,4 +1,4 @@
-slave_name = ENV["COMPUTERNAME"]
+slave_name = ENV["SLAVE_NAME"]
 puts "Connecting to " + slave_name + "..."
 myApp = App.focus("C:\\Program Files\\Mozilla Firefox\\firefox.exe http://192.168.255.253:8080/login?from=/computer/" + slave_name)
 
@@ -15,6 +15,8 @@ click("1452356911632.png")
 paste("v3VFZnkkj0h1vCqx4Pz2")
 click("1452356983179.png")
 
+sleep(2)
+type(Key.SPACE)
 
 begin
     wait("1452358264990.png",5)
