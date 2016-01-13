@@ -16,7 +16,7 @@ paste("v3VFZnkkj0h1vCqx4Pz2")
 click("1452356983179.png")
 
 sleep(2)
-type(Key.SPACE)
+type(Key.END)
 
 begin
     wait("1452358264990.png",5)
