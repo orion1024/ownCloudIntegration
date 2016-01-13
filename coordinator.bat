@@ -12,7 +12,8 @@ set LOG_FILE=%CUR_DIR%%~n0.log
 cd %CUR_DIR%
 
 rem The first argument is the set of scripts the caller wants us to execute
-call %1\%1.bat >> %LOG_FILE%
+echo Calling %1\%1.bat... >> %LOG_FILE%
+call %1\%1.bat
 
 
 endlocal
