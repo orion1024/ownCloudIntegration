@@ -14,10 +14,13 @@ PROXMOX_HOST=192.168.255.254
 # NB : authentification will be key-based, no password.
 # The keys must have been set up properly for both the user executing *this* script (should be jenkins)
 # and the remote user on proxmox.
+
 PROXMOX_USER=jenkins
 
 # Name of the script sent to PROXMOX
 RESET_SCRIPT_FILE=reset-proxmox-commands.sh
+# Name of its log
+RESET_SCRIPT_LOG=${RESET_SCRIPT_FILE%.*}.log
 
 # We get the script name
 SCRIPT_NAME=`basename "$0"`
@@ -28,6 +31,7 @@ LOG_FILE=$CUR_DIR/${SCRIPT_NAME%.*}.log
 
 #-------------------------
 
+echo ----- Script begins -----
 echo Commands sent to proxmox are in $RESET_SCRIPT_FILE >> $LOG_FILE
 
 echo Content of the script is : >> $LOG_FILE
@@ -35,14 +39,18 @@ echo -BEGIN-  >> $LOG_FILE
 cat $RESET_SCRIPT_FILE  >> $LOG_FILE
 echo -END-  >> $LOG_FILE
 
+# Setting the executable flag before sending it...
+chmod +x  $RESET_SCRIPT_FILE
+
 # Sending the script...
 echo Sending script...  >> $LOG_FILE
-echo Command is : scp -p -P 29998 $RESET_SCRIPT_FILE $PROXMOX_USER@$PROXMOX_HOST:./scripts/$RESET_SCRIPT_FILE  >> $LOG_FILE
-scp -p -P 29998 $RESET_SCRIPT_FILE $PROXMOX_USER@$PROXMOX_HOST:./scripts/$RESET_SCRIPT_FILE  >> $LOG_FILE
+echo Command is : scp -P 29998 $RESET_SCRIPT_FILE $PROXMOX_USER@$PROXMOX_HOST:./scripts/$RESET_SCRIPT_FILE 2>&1  >> $LOG_FILE
+scp -P 29998 $RESET_SCRIPT_FILE $PROXMOX_USER@$PROXMOX_HOST:./scripts/$RESET_SCRIPT_FILE 2>&1 >> $LOG_FILE
 
 # Now executing the script
 echo Executing script on $PROXMOX_HOST with user $PROXMOX_USER...  >> $LOG_FILE
-echo Command is : ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/$RESET_SCRIPT_FILE
+echo Command is : ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/$RESET_SCRIPT_FILE 2>&1 >> $LOG_FILE
 
-ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/$RESET_SCRIPT_FILE  >> $LOG_FILE
+ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/$RESET_SCRIPT_FILE 2>&1 >> $LOG_FILE
 
+echo ---- Script ends -----

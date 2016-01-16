@@ -15,6 +15,11 @@ LOG_FILE=$CUR_DIR/${SCRIPT_NAME%.*}.log
 
 #-------------------------
 
+echo ---- Script begins ---- >> $LOG_FILE
 
-# This script was generated automatically
-echo Script executed just now !! >> $RESET_SCRIPT_LOG
+echo Script executed just now !! >> $LOG_FILE
+
+echo qm rollback 110 Clean_state 2>&1 >> $LOG_FILE
+
+echo ---- Script ends ---- >> $LOG_FILE
+
