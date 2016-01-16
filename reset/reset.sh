@@ -42,7 +42,7 @@ scp -p -P 29998 $RESET_SCRIPT_FILE $PROXMOX_USER@$PROXMOX_HOST:./scripts/$RESET_
 
 # Now executing the script
 echo Executing script on $PROXMOX_HOST with user $PROXMOX_USER...  >> $LOG_FILE
-echo Command is : ssh -p 29998 -i .ssh/id_rsa $PROXMOX_USER@$PROXMOX_HOST ./scripts/$RESET_SCRIPT_FILE
+echo Command is : ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/$RESET_SCRIPT_FILE
 
-ssh -p 29998 -i .ssh/id_rsa $PROXMOX_USER@$PROXMOX_HOST ./scripts/$RESET_SCRIPT_FILE  >> $LOG_FILE
+ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/$RESET_SCRIPT_FILE  >> $LOG_FILE
 
