@@ -35,7 +35,7 @@ cd "$CUR_DIR"
 
 #-------------------------
 
-echo ----- Script begins -----
+echo ----- Script $SCRIPT_NAME begins -----
 echo Commands sent to proxmox are in $RESET_SCRIPT_FILE 2>&1 | tee  "$LOG_FILE"
 
 if [[ $1 = "" || $2 = "" ]]; then
@@ -49,7 +49,7 @@ else
 
 		# Sending the script...
 		echo Sending script... 2>&1 | tee  "$LOG_FILE"
-		echo Command is : scp -P 29998 $RESET_SCRIPT_FILE $PROXMOX_USER@$PROXMOX_HOST:./scripts/reset/$RESET_SCRIPT_FILE2>&1 | tee  "$LOG_FILE"
+		echo Command is : scp -P 29998 $RESET_SCRIPT_FILE $PROXMOX_USER@$PROXMOX_HOST:./scripts/reset/$RESET_SCRIPT_FILE 2>&1 | tee  "$LOG_FILE"
 		scp -P 29998 $RESET_SCRIPT_FILE $PROXMOX_USER@$PROXMOX_HOST:./scripts/reset/$RESET_SCRIPT_FILE 2>&1 | tee  "$LOG_FILE"
 
 		# Now executing the script
@@ -59,4 +59,4 @@ else
 		ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/reset/$RESET_SCRIPT_FILE $VM_LIST $SNAP_NAME 2>&1 | tee  "$LOG_FILE"
 fi
 
-echo ---- Script ends -----
+echo ---- Script $SCRIPT_NAME ends -----
