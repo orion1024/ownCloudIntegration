@@ -15,7 +15,7 @@ LOG_FILE=$CUR_DIR/${SCRIPT_NAME%.*}.log
 
 #-------------------------
 
-echo ---- Script begins ---- 2>&1 | tee  "$LOG_FILE"
+echo ---- Script $SCRIPT_NAME begins ---- 2>&1 | tee  "$LOG_FILE"
 
 
 echo Script executed just now !! 2>&1 | tee  "$LOG_FILE"
@@ -35,5 +35,5 @@ else
 	echo Missing parameter. Usage : $SCRIPT_NAME vmid1[,vmid2,...] snapshot_name 2>&1 | tee  "$LOG_FILE"
 fi
 
-echo ---- Script ends ---- 2>&1 | tee  "$LOG_FILE"
+echo ---- Script $SCRIPT_NAME ends ---- 2>&1 | tee  "$LOG_FILE"
 
