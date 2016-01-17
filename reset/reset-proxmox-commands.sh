@@ -33,13 +33,13 @@ if [[ $1 != "" && $2 != "" ]]; then
 		qm rollback $VM_ID $SNAP_NAME 2>&1 | tee  "$LOG_FILE"
 		
 		# If at least one command failed, steps failed
-		EXIT_CODE=$(($EXIT_CODE || $?))
+		EXIT_CODE=$(($EXIT_CODE || ${PIPESTATUS[0]}))
 		
 		echo Starting VM with ID $VM_ID... 2>&1 | tee  "$LOG_FILE"
 		qm start $VM_ID 2>&1 | tee  "$LOG_FILE"
 		
 		# If at least one command failed, steps failed
-		EXIT_CODE=$(($EXIT_CODE || $?))
+		EXIT_CODE=$(($EXIT_CODE || ${PIPESTATUS[0]}))
 		
 	done
 else
