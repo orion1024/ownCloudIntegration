@@ -15,6 +15,9 @@ LOG_FILE=$CUR_DIR/${SCRIPT_NAME%.*}.log
 
 #-------------------------
 
+# Unless specified otherwise, exit with code 0
+EXIT_CODE=0
+
 echo ---- Script $SCRIPT_NAME begins ---- 2>&1 | tee  "$LOG_FILE"
 
 
@@ -28,12 +31,22 @@ if [[ $1 != "" && $2 != "" ]]; then
 	for VM_ID in ${VM_LIST/,/ } ; do
 		echo Resetting VM with ID $VM_ID... 2>&1 | tee  "$LOG_FILE"
 		qm rollback $VM_ID $SNAP_NAME 2>&1 | tee  "$LOG_FILE"
+		
+		# If at least one command failed, steps failed
+		EXIT_CODE=[[ $EXIT_CODE || $? ]]
+		
 		echo Starting VM with ID $VM_ID... 2>&1 | tee  "$LOG_FILE"
 		qm start $VM_ID 2>&1 | tee  "$LOG_FILE"
+		
+		# If at least one command failed, steps failed
+		EXIT_CODE=[[ $EXIT_CODE || $? ]]
+		
 	done
 else
 	echo Missing parameter. Usage : $SCRIPT_NAME vmid1[,vmid2,...] snapshot_name 2>&1 | tee  "$LOG_FILE"
+	EXIT_CODE=1
 fi
 
-echo ---- Script $SCRIPT_NAME ends ---- 2>&1 | tee  "$LOG_FILE"
+echo ---- Script $SCRIPT_NAME ends with exit code $EXIT_CODE ----- 2>&1 | tee  "$LOG_FILE"
 
+exit $EXIT_CODE

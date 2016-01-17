@@ -35,11 +35,15 @@ cd "$CUR_DIR"
 
 #-------------------------
 
-echo ----- Script $SCRIPT_NAME begins -----
+# Unless specified otherwise, exit with code 0
+EXIT_CODE=0
+
+echo ----- Script $SCRIPT_NAME begins ----- 2>&1 | tee  "$LOG_FILE"
 echo Commands sent to proxmox are in $RESET_SCRIPT_FILE 2>&1 | tee  "$LOG_FILE"
 
 if [[ $1 = "" || $2 = "" ]]; then
         echo Missing parameter. Usage : $SCRIPT_NAME vmid1[,vmid2,...] snapshot_name 2>&1 | tee "$LOG_FILE"
+		EXIT_CODE=1
 else
         VM_LIST=$1
 		SNAP_NAME=$2
@@ -57,6 +61,12 @@ else
 		echo Command is : ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/reset/$RESET_SCRIPT_FILE $VM_LIST $SNAP_NAME 2>&1 | tee  "$LOG_FILE"
 
 		ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/reset/$RESET_SCRIPT_FILE $VM_LIST $SNAP_NAME 2>&1 | tee  "$LOG_FILE"
+		
+		# Uses remote command exit code for our own exit code
+		EXIT_CODE=$?
 fi
 
-echo ---- Script $SCRIPT_NAME ends -----
+echo ---- Script $SCRIPT_NAME ends with exit code $EXIT_CODE ----- 2>&1 | tee  "$LOG_FILE"
+
+exit $EXIT_CODE
+
