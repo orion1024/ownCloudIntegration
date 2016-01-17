@@ -63,7 +63,7 @@ else
 		ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/reset/$RESET_SCRIPT_FILE $VM_LIST $SNAP_NAME 2>&1 | tee  "$LOG_FILE"
 		
 		# Uses remote command exit code for our own exit code
-		EXIT_CODE=$?
+		EXIT_CODE=${PIPESTATUS[0]}
 fi
 
 echo ---- Script $SCRIPT_NAME ends with exit code $EXIT_CODE ----- 2>&1 | tee  "$LOG_FILE"
