@@ -36,28 +36,27 @@ cd "$CUR_DIR"
 #-------------------------
 
 echo ----- Script begins -----
-echo Commands sent to proxmox are in $RESET_SCRIPT_FILE >> "$LOG_FILE"
+echo Commands sent to proxmox are in $RESET_SCRIPT_FILE 2>&1 | tee  "$LOG_FILE"
 
 if [[ $1 = "" || $2 = "" ]]; then
-        echo Missing parameter. Usage : $SCRIPT_NAME vmid1[,vmid2,...] snapshot_name
-        echo Missing parameter. Usage : $SCRIPT_NAME vmid1[,vmid2,...] snapshot_name >> "$LOG_FILE"
+        echo Missing parameter. Usage : $SCRIPT_NAME vmid1[,vmid2,...] snapshot_name 2>&1 | tee "$LOG_FILE"
 else
         VM_LIST=$1
-	SNAP_NAME=$2
+		SNAP_NAME=$2
 
-	# Setting the executable flag before sending it...
-	chmod +x  $RESET_SCRIPT_FILE
+		# Setting the executable flag before sending it...
+		chmod +x  $RESET_SCRIPT_FILE 2>&1 | tee  "$LOG_FILE"
 
-	# Sending the script...
-	echo Sending script...  >> "$LOG_FILE"
-	echo Command is : scp -P 29998 $RESET_SCRIPT_FILE $PROXMOX_USER@$PROXMOX_HOST:./scripts/reset/$RESET_SCRIPT_FILE >> "$LOG_FILE"
-	scp -P 29998 $RESET_SCRIPT_FILE $PROXMOX_USER@$PROXMOX_HOST:./scripts/reset/$RESET_SCRIPT_FILE 2>&1 >> "$LOG_FILE"
+		# Sending the script...
+		echo Sending script... 2>&1 | tee  "$LOG_FILE"
+		echo Command is : scp -P 29998 $RESET_SCRIPT_FILE $PROXMOX_USER@$PROXMOX_HOST:./scripts/reset/$RESET_SCRIPT_FILE2>&1 | tee  "$LOG_FILE"
+		scp -P 29998 $RESET_SCRIPT_FILE $PROXMOX_USER@$PROXMOX_HOST:./scripts/reset/$RESET_SCRIPT_FILE 2>&1 | tee  "$LOG_FILE"
 
-	# Now executing the script
-	echo Executing script on $PROXMOX_HOST with user $PROXMOX_USER...  >> "$LOG_FILE"
-	echo Command is : ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/reset/$RESET_SCRIPT_FILE $VM_LIST $SNAP_NAME >> "$LOG_FILE"
+		# Now executing the script
+		echo Executing script on $PROXMOX_HOST with user $PROXMOX_USER... 2>&1 | tee  "$LOG_FILE"
+		echo Command is : ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/reset/$RESET_SCRIPT_FILE $VM_LIST $SNAP_NAME 2>&1 | tee  "$LOG_FILE"
 
-	ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/reset/$RESET_SCRIPT_FILE $VM_LIST $SNAP_NAME 2>&1 >> "$LOG_FILE"
+		ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/reset/$RESET_SCRIPT_FILE $VM_LIST $SNAP_NAME 2>&1 | tee  "$LOG_FILE"
 fi
 
 echo ---- Script ends -----
