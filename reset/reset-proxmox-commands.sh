@@ -28,7 +28,7 @@ if [[ $1 != "" && $2 != "" ]]; then
 	VM_LIST=$1
 	SNAP_NAME=$2
 
-	for VM_ID in ${VM_LIST/,/ } ; do
+	for VM_ID in ${VM_LIST//,/ } ; do
 		echo Resetting VM with ID $VM_ID... 2>&1 | tee  "$LOG_FILE"
 		qm rollback $VM_ID $SNAP_NAME 2>&1 | tee  "$LOG_FILE"
 		
