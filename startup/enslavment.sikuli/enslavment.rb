@@ -125,9 +125,9 @@ browserRegion = App.focusedWindow()
 
 puts "Looking for login form..."
 if browserRegion.nil?
-	loginFormRegion = smartWait("Jenkins_LoginForm.png", 50)
+	loginFormRegion = smartWait("Jenkins_LoginForm.png", 120)
 else
-	loginFormRegion = smartWait("Jenkins_LoginForm.png", 50, browserRegion)
+	loginFormRegion = smartWait("Jenkins_LoginForm.png", 120, browserRegion)
 end
 
 if loginFormRegion.nil?
