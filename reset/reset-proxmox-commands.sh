@@ -35,6 +35,10 @@ if [[ $1 != "" && $2 != "" ]]; then
 		# If at least one command failed, steps failed
 		EXIT_CODE=$(($EXIT_CODE || ${PIPESTATUS[0]}))
 		
+	done
+	
+	for VM_ID in ${VM_LIST//,/ } ; do
+		
 		echo Starting VM with ID $VM_ID... 2>&1 | tee  "$LOG_FILE"
 		qm start $VM_ID 2>&1 | tee  "$LOG_FILE"
 		
