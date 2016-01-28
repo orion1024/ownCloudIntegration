@@ -127,78 +127,85 @@ puts "Looking for login form..."
 loginFormRegion = smartWait("Jenkins_LoginForm.png", 30, browserRegion)
 
 
-if not loginFormRegion.nil?
+if loginFormRegion.nil?
+	puts "Couldn't find login form."
+else
 
 	puts "Now filling in login form..."
-	smartWaitAndClick("Jenkins_UserField.png", 2, loginFormRegion)
 	
-	# to prevent any autofilll from screwing up the paste
-	sleep(2)
+	if smartWaitAndClick("Jenkins_UserField.png", 2, loginFormRegion).nil?
+		puts "Couldn't find the login field."
+	else
 	
-	paste(jenkins_user)
-	type(Key.TAB)
-	
-	# to prevent any autofilll from screwing up the paste
-	sleep(1)
-	
-	paste(jenkins_password)
-	
-	smartWaitAndClick("Jenkins_LogInButton.png", 2, loginFormRegion)
-
-	puts "Login form completed. Now looking for Jenkins Java Web Start button..."
-
-	sleep(2)
-	type(Key.END)
-	sleep(1)
-
-	javaWebStartButtonFound = 0
-	retries = 0
-	while javaWebStartButtonFound == 0 and retries < 10
-		javaWebStartButtonFound = smartWaitAndClick("Jenkins_JavaWebLaunchButton.png", 5, browserRegion)
+		# to prevent any autofill from screwing up the paste
+		sleep(2)
 		
-		if javaWebStartButtonFound == 0
-			retries = retries + 1
-			puts "Jenkins Java Web Start button not found. trying to bring it back, retry #%d" % retries
-			smartWaitAndClick("Jenkins_BringBackOnline.png", 2, browserRegion)
-		end		
-	end
-	
-	if javaWebStartButtonFound != 0
-	
-		# We now wait for the connected image to appear.
-		# But since Java is so annoying, we might have security prompts/warnings that we might need to clear before it consents to run the applet...
-		# So we look for the connected image, but if it doesn't appear after a while we also check for such prompts.
-		retries = 0
-		while not connected and retries < 3
+		paste(jenkins_user)
+		type(Key.TAB)
 		
-			connectedMatch = smartWait("Jenkins_Connected.png", 4)
-			connected = not(connectedMatch.nil?)
+		# to prevent any autofill from screwing up the paste
+		sleep(1)
+		
+		paste(jenkins_password)
+		
+		if smartWaitAndClick("Jenkins_LogInButton.png", 2, loginFormRegion).nil?
+			puts "Couldn't find the login button."
+		else
+
+			puts "Login form completed. Now looking for Jenkins Java Web Start button..."
+
+			sleep(2)
+			type(Key.END)
+			sleep(1)
+
+			javaWebStartButtonFound = 0
+			retries = 0
+			while javaWebStartButtonFound != 1 and retries < 10
+				javaWebStartButtonFound = smartWaitAndClick("Jenkins_JavaWebLaunchButton.png", 5, browserRegion)
+				
+				if javaWebStartButtonFound != 1
+					retries = retries + 1
+					puts "Jenkins Java Web Start button not found. trying to bring it back, retry #%d" % retries
+					smartWaitAndClick("Jenkins_BringBackOnline.png", 2, browserRegion)
+				end		
+			end
 			
-			if not connected
-				# No connected image ? there might be some prompt asking us something
-				if smartWaitAndClick("Java_RunThisApplicationDialog.png", 1, browserRegion, "Java_RunThisApplicationRunButton.png", true)
-					puts "Found a Run this application dialog."
+			if javaWebStartButtonFound == 1
+			
+				# We now wait for the connected image to appear.
+				# But since Java is so annoying, we might have security prompts/warnings that we might need to clear before it consents to run the applet...
+				# So we look for the connected image, but if it doesn't appear after a while we also check for such prompts.
+				retries = 0
+				while not connected and retries < 3
+				
+					connectedMatch = smartWait("Jenkins_Connected.png", 4)
+					connected = not(connectedMatch.nil?)
+					
+					if not connected
+						# No connected image ? there might be some prompt asking us something
+						if smartWaitAndClick("Java_RunThisApplicationDialog.png", 1, browserRegion, "Java_RunThisApplicationRunButton.png", true)
+							puts "Found a Run this application dialog."
+						end
+						if smartWaitAndClick("Java_UpdateNeededDialog.png", 1, browserRegion, "Java_UpdateNeededDialog_LaterButton.png", true).nil?
+							puts "Found a Java update dialog."
+						end
+					end
 				end
-				if smartWaitAndClick("Java_UpdateNeededDialog.png", 1, browserRegion, "Java_UpdateNeededDialog_LaterButton.png", true).nil?
-					puts "Found a Java update dialog."
+				
+				if not connected
+					puts "Couldn't find jenkins connected image."
 				end
+			else
+				puts "Couldn't find Jenkins Java Web Start button."
 			end
 		end
-		
-		if not connected
-			puts "Couldn't find jenkins connected image."
-		end
-	else
-		puts "Couldn't find Jenkins Java Web Start button."
 	end
-else
-	puts "Couldn't find login form."
 end
 
 if connected
-	puts "Connected successfully to jenkins as slave " + slave_name
+	puts "Connected successfully to jenkins as slave " + slave_name + "."
 else
-	puts "Failed to connect to Jenkins"
+	puts "Failed to connect to Jenkins."
 end
 
 
