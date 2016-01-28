@@ -124,20 +124,25 @@ smartWait("Jenkins_Logo.png", 30)
 browserRegion = App.focusedWindow()
 
 puts "Looking for login form..."
-loginFormRegion = smartWait("Jenkins_LoginForm.png", 10, browserRegion)
+loginFormRegion = smartWait("Jenkins_LoginForm.png", 30, browserRegion)
 
 
 if not loginFormRegion.nil?
 
 	puts "Now filling in login form..."
 	smartWaitAndClick("Jenkins_UserField.png", 2, loginFormRegion)
-
-	# click("Jenkins_UserField.png")
+	
+	# to prevent any autofilll from screwing up the paste
+	sleep(2)
+	
 	paste(jenkins_user)
 	type(Key.TAB)
 	
-	#click("Jenkins_PasswordField.png")
+	# to prevent any autofilll from screwing up the paste
+	sleep(1)
+	
 	paste(jenkins_password)
+	
 	smartWaitAndClick("Jenkins_LogInButton.png", 2, loginFormRegion)
 
 	puts "Login form completed. Now looking for Jenkins Java Web Start button..."
@@ -148,7 +153,7 @@ if not loginFormRegion.nil?
 
 	javaWebStartButtonFound = 0
 	retries = 0
-	while javaWebStartButtonFound == 0 and retries < 4
+	while javaWebStartButtonFound == 0 and retries < 10
 		javaWebStartButtonFound = smartWaitAndClick("Jenkins_JavaWebLaunchButton.png", 5, browserRegion)
 		
 		if javaWebStartButtonFound == 0
