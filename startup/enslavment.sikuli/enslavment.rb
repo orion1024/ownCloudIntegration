@@ -124,8 +124,11 @@ smartWait("Jenkins_Logo.png", 30)
 browserRegion = App.focusedWindow()
 
 puts "Looking for login form..."
-loginFormRegion = smartWait("Jenkins_LoginForm.png", 30, browserRegion)
-
+if browserRegion.nil?
+	loginFormRegion = smartWait("Jenkins_LoginForm.png", 50)
+else
+	loginFormRegion = smartWait("Jenkins_LoginForm.png", 50, browserRegion)
+end
 
 if loginFormRegion.nil?
 	puts "Couldn't find login form."
@@ -133,7 +136,7 @@ else
 
 	puts "Now filling in login form..."
 	
-	if smartWaitAndClick("Jenkins_UserField.png", 2, loginFormRegion).nil?
+	if smartWaitAndClick("Jenkins_UserField.png", 2, loginFormRegion) != 1
 		puts "Couldn't find the login field."
 	else
 	
@@ -148,7 +151,7 @@ else
 		
 		paste(jenkins_password)
 		
-		if smartWaitAndClick("Jenkins_LogInButton.png", 2, loginFormRegion).nil?
+		if smartWaitAndClick("Jenkins_LogInButton.png", 2, loginFormRegion) != 1
 			puts "Couldn't find the login button."
 		else
 
@@ -176,17 +179,18 @@ else
 				# But since Java is so annoying, we might have security prompts/warnings that we might need to clear before it consents to run the applet...
 				# So we look for the connected image, but if it doesn't appear after a while we also check for such prompts.
 				retries = 0
-				while not connected and retries < 3
+				while not connected and retries < 5
 				
 					connectedMatch = smartWait("Jenkins_Connected.png", 4)
 					connected = not(connectedMatch.nil?)
 					
 					if not connected
+						retries = retries + 1
 						# No connected image ? there might be some prompt asking us something
-						if smartWaitAndClick("Java_RunThisApplicationDialog.png", 1, browserRegion, "Java_RunThisApplicationRunButton.png", true)
+						if smartWaitAndClick("Java_RunThisApplicationDialog.png", 1, browserRegion, "Java_RunThisApplicationRunButton.png", true) == 1
 							puts "Found a Run this application dialog."
 						end
-						if smartWaitAndClick("Java_UpdateNeededDialog.png", 1, browserRegion, "Java_UpdateNeededDialog_LaterButton.png", true).nil?
+						if smartWaitAndClick("Java_UpdateNeededDialog.png", 1, browserRegion, "Java_UpdateNeededDialog_LaterButton.png", true) == 1
 							puts "Found a Java update dialog."
 						end
 					end
