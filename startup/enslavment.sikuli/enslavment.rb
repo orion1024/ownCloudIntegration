@@ -157,19 +157,36 @@ else
 
 			puts "Login form completed. Now looking for Jenkins Java Web Start button..."
 
-			sleep(2)
-			type(Key.END)
-			sleep(1)
-
+			sleep(5)
+			
 			javaWebStartButtonFound = 0
 			retries = 0
 			while javaWebStartButtonFound != 1 and retries < 10
+			
+				# Sometimes the button is located at the very bottom of the page, getting there.
+				type(Key.END)
+				sleep(2)
+				
+				# Looking for the button.
 				javaWebStartButtonFound = smartWaitAndClick("Jenkins_JavaWebLaunchButton.png", 5, browserRegion)
 				
+				# Not found ? let's try disconnecting the slave manually. Sometimes Kenkins thinks slave is still connected and so hides the button.
 				if javaWebStartButtonFound != 1
 					retries = retries + 1
 					puts "Jenkins Java Web Start button not found. trying to bring it back, retry #%d" % retries
-					smartWaitAndClick("Jenkins_BringBackOnline.png", 2, browserRegion)
+					
+					# Disconnect button is on top of the page, so we go up.
+					type(Key.BEGIN)
+					sleep(2)
+					
+					# launching the disconnect action using the URL, it's better than using image recognition.
+					smartWaitAndClick("Jenkins_DisconnectButton.png", 2, browserRegion)
+					
+					sleep(1)
+					
+					# jenkins asks for confirmation
+					smartWaitAndClick("Jenkins_ConfirmDisconnectZone.png", 2, browserRegion, "Jenkins_ConfirmDisconnectButton.png", true)
+					sleep(1)
 				end		
 			end
 			
