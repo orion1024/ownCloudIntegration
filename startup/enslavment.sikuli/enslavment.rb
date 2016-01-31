@@ -176,7 +176,7 @@ else
 					puts "Jenkins Java Web Start button not found. trying to bring it back, retry #%d" % retries
 					
 					# Disconnect button is on top of the page, so we go up.
-					type(Key.BEGIN)
+					type(Key.HOME)
 					sleep(2)
 					
 					# launching the disconnect action using the URL, it's better than using image recognition.
