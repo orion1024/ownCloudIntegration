@@ -37,15 +37,16 @@ if [[ $1 != "" && $2 != "" ]]; then
 		
 	done
 	
-	for VM_ID in ${VM_LIST//,/ } ; do
+	# Not needed anymore since snapshots are done with the VM powered on.
+	# for VM_ID in ${VM_LIST//,/ } ; do
 		
-		echo Starting VM with ID $VM_ID... 2>&1 | tee  "$LOG_FILE"
-		qm start $VM_ID 2>&1 | tee  "$LOG_FILE"
+		# echo Starting VM with ID $VM_ID... 2>&1 | tee  "$LOG_FILE"
+		# qm start $VM_ID 2>&1 | tee  "$LOG_FILE"
 		
-		# If at least one command failed, steps failed
-		EXIT_CODE=$(($EXIT_CODE || ${PIPESTATUS[0]}))
+		# # If at least one command failed, steps failed
+		# EXIT_CODE=$(($EXIT_CODE || ${PIPESTATUS[0]}))
 		
-	done
+	# done
 else
 	echo Missing parameter. Usage : $SCRIPT_NAME vmid1[,vmid2,...] snapshot_name 2>&1 | tee  "$LOG_FILE"
 	EXIT_CODE=1
