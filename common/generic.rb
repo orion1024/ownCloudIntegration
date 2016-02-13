@@ -21,8 +21,13 @@ def fetchClientBinaries()
 		return ""
 	else
 	
-		# First clean the local directory
-		FileUtils.rm_r Dir.glob(binLocalLocation + '/*')
+		if File.exist?(binLocalLocation)
+			# First clean the local directory
+			FileUtils.rm_r Dir.glob(binLocalLocation + '/*')
+		else
+			# or create the directory if it does not exist
+			FileUtils.mkpath(binLocalLocation)
+		end
 		
 		# then we copy from the remote share
 		FileUtils.cp_r  binRemoteLocation + '/.', binLocalLocation
