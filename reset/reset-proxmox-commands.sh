@@ -2,6 +2,7 @@
 
 # ----------------------------------------------------------------------
 # 	Executed on the proxmox server to reset the integration platform
+#	Rollback & suspend all VM, then resume them all at once.
 #	Author : orion1024
 # 	Date : 2016
 # ----------------------------------------------------------------------
@@ -32,21 +33,39 @@ if [[ $1 != "" && $2 != "" ]]; then
 		echo Resetting VM with ID $VM_ID... 2>&1 | tee  "$LOG_FILE"
 		qm rollback $VM_ID $SNAP_NAME 2>&1 | tee  "$LOG_FILE"
 		
-		# If at least one command failed, steps failed
+		# If at least one command failed, step failed
 		EXIT_CODE=$(($EXIT_CODE || ${PIPESTATUS[0]}))
 		
+		# We don't want to start them yet, so we suspend the VM right after the rollback.
+		# This way they will all start at the same time, without any rollback (which is an heavy IO process) slowing them down.
+		# This avoid having a VM trying to connect
+		qm suspend $VM_ID $SNAP_NAME 2>&1 | tee  "$LOG_FILE"
+		
+		# If at least one command failed, step failed
+		EXIT_CODE=$(($EXIT_CODE || ${PIPESTATUS[0]}))
+		
+		if [[ $EXIT_CODE != "0" ]]; then
+			echo "Error detected, aborting." | tee  "$LOG_FILE"
+			break
+		fi
 	done
 	
-	# Not needed anymore since snapshots are done with the VM powered on.
-	# for VM_ID in ${VM_LIST//,/ } ; do
-		
-		# echo Starting VM with ID $VM_ID... 2>&1 | tee  "$LOG_FILE"
-		# qm start $VM_ID 2>&1 | tee  "$LOG_FILE"
-		
-		# # If at least one command failed, steps failed
-		# EXIT_CODE=$(($EXIT_CODE || ${PIPESTATUS[0]}))
-		
-	# done
+	if [[ $EXIT_CODE == "0" ]]; then
+
+		for VM_ID in ${VM_LIST//,/ } ; do
+			
+			echo Resuming VM with ID $VM_ID... 2>&1 | tee  "$LOG_FILE"
+			qm resume $VM_ID 2>&1 | tee  "$LOG_FILE"
+			
+			# If at least one command failed, step failed
+			EXIT_CODE=$(($EXIT_CODE || ${PIPESTATUS[0]}))
+			
+			if [[ $EXIT_CODE != "0" ]]; then
+				echo "Error detected, aborting." | tee  "$LOG_FILE"
+				break
+			fi
+		done
+	fi
 else
 	echo Missing parameter. Usage : $SCRIPT_NAME vmid1[,vmid2,...] snapshot_name 2>&1 | tee  "$LOG_FILE"
 	EXIT_CODE=1
