@@ -39,7 +39,7 @@ if [[ $1 != "" && $2 != "" ]]; then
 		# We don't want to start them yet, so we suspend the VM right after the rollback.
 		# This way they will all start at the same time, without any rollback (which is an heavy IO process) slowing them down.
 		# This avoid having a VM trying to connect
-		qm suspend $VM_ID $SNAP_NAME 2>&1 | tee  "$LOG_FILE"
+		qm suspend $VM_ID 2>&1 | tee  "$LOG_FILE"
 		
 		# If at least one command failed, step failed
 		EXIT_CODE=$(($EXIT_CODE || ${PIPESTATUS[0]}))
