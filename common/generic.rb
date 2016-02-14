@@ -40,9 +40,12 @@ def fetchClientBinaries()
 			binFile = "owncloud"
 		end
 		
-		if File.exist?(binLocalLocation + '/' + binFile)
-			return binLocalLocation + '/' + binFile
+		binFileFullPath = binLocalLocation + '/' + binFile
+		
+		if File.exist?(binFileFullPath)
+			return binFileFullPath
 		else
+			puts binFileFullPath + " not found, fetch failed."
 			return ""
 		end
 	end

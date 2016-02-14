@@ -13,4 +13,11 @@ require_relative '../common/sikulix'
 
 #######		Start of script		#########
 
-puts fetchAndExecuteOwnCloudClient()
+puts "Launching ownCloud client..."
+
+appRegion =  fetchAndExecuteOwnCloudClient()
+returnCode = (not appRegion.nil?)
+
+puts "End of execution. Return code : " + returnCode.to_s
+
+exit returnCode
