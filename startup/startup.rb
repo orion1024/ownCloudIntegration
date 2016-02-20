@@ -11,8 +11,8 @@ require 'tmpdir'
 slave_name = ENV["COMPUTERNAME"]
 jenkins_host = ENV["JENKINS_HOST"]
 jenkins_user = ENV["JENKINS_USER"]
-# jenkins_apitoken = ENV["JENKINS_APITOKEN"]
-jenkins_apitoken = "a1329adde5a281e2afbbe0aedb9d93ac"
+jenkins_apitoken = ENV["JENKINS_APITOKEN"]
+
 
 jarFullPathName = Dir.tmpdir() + "/slave.jar"
 
