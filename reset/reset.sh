@@ -41,13 +41,14 @@ EXIT_CODE=0
 echo ----- Script $SCRIPT_NAME begins ----- 2>&1 | tee  "$LOG_FILE"
 echo Commands sent to proxmox are in $RESET_SCRIPT_FILE 2>&1 | tee  "$LOG_FILE"
 
-if [[ $1 = "" || $2 = "" ]]; then
-        echo Missing parameter. Usage : $SCRIPT_NAME vmid1[,vmid2,...] snapshot_name 2>&1 | tee "$LOG_FILE"
+if [[ $1 = "" || $2 = ""]]; then
+        echo Missing parameter. Usage : $SCRIPT_NAME vmid1[,vmid2,...] snapshot_name [slave1,slave2,...] 2>&1 | tee "$LOG_FILE"
 		EXIT_CODE=1
 else
         VM_LIST=$1
 		SNAP_NAME=$2
-
+		SLAVE_LIST=$3		# optional
+		
 		# Setting the executable flag before sending it...
 		chmod +x  $RESET_SCRIPT_FILE 2>&1 | tee  "$LOG_FILE"
 
@@ -58,9 +59,9 @@ else
 
 		# Now executing the script
 		echo Executing script on $PROXMOX_HOST with user $PROXMOX_USER... 2>&1 | tee  "$LOG_FILE"
-		echo Command is : ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/reset/$RESET_SCRIPT_FILE $VM_LIST $SNAP_NAME 2>&1 | tee  "$LOG_FILE"
+		echo Command is : ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/reset/$RESET_SCRIPT_FILE $VM_LIST $SNAP_NAME $SLAVE_LIST 2>&1 | tee  "$LOG_FILE"
 
-		ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/reset/$RESET_SCRIPT_FILE $VM_LIST $SNAP_NAME 2>&1 | tee  "$LOG_FILE"
+		ssh -p 29998 $PROXMOX_USER@$PROXMOX_HOST ./scripts/reset/$RESET_SCRIPT_FILE $VM_LIST $SNAP_NAME $SLAVE_LIST 2>&1 | tee  "$LOG_FILE"
 		
 		# Uses remote command exit code for our own exit code
 		EXIT_CODE=${PIPESTATUS[0]}
