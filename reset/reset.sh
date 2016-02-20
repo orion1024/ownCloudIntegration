@@ -41,7 +41,7 @@ EXIT_CODE=0
 echo ----- Script $SCRIPT_NAME begins ----- 2>&1 | tee  "$LOG_FILE"
 echo Commands sent to proxmox are in $RESET_SCRIPT_FILE 2>&1 | tee  "$LOG_FILE"
 
-if [[ $1 = "" || $2 = ""]]; then
+if [[ $1 = "" || $2 = "" ]]; then
         echo Missing parameter. Usage : $SCRIPT_NAME vmid1[,vmid2,...] snapshot_name [slave1,slave2,...] 2>&1 | tee "$LOG_FILE"
 		EXIT_CODE=1
 else
