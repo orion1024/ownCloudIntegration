@@ -20,4 +20,10 @@ returnCode = (not appRegion.nil?)
 
 puts "End of execution. Return code : " + returnCode.to_s
 
+if returnCode
+	while appRegion.isRunning()
+		sleep(5)
+	end
+end
+
 exit returnCode
